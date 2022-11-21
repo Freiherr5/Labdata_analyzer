@@ -9,18 +9,20 @@ from configparser import ConfigParser
 import StandardConfig
 
 
+
 class GrowthObserver:
 
     def __init__(self, df):
         self.df = df
 
-    path = StandardConfig.find_folderpath()    #path of the folder with the scripts
-    def plot_growth(self, set_name="bacteria_plot", set_color="red", set_directory=path + "/output/", set_time_scale = "min", induction_point ="0", set_inducer = "IPTG", set_OD = "600"):
+    path = StandardConfig.FolderPath.find_folderpath()    #path of the folder with the scripts
+    def plot_growth(df, set_name="bacteria_plot", set_color="red", set_directory=path + "/output/", induction_point ="0", set_inducer = "IPTG", set_OD = "600"):
+        df_column = df.columns[0]
         plt.figure(figsize=(15, 10))
         ax1 = plt.subplot(1, 1, 1)
-        ax1.scatter(self, x="Time [" + set_time_scale + "]", y="$OD_" + set_OD + "$", color=str(set_color))
-        ax1.set_ylabel("$OD_600$", fontsize=15)
-        ax1.set_xlabel("Volume [ml]", fontsize=15)
+        ax1.scatter(df, x=df_column, y="OD", color=str(set_color))
+        ax1.set_ylabel("$OD_" + set_OD + "$", fontsize=15)
+        ax1.set_xlabel("Time [" + df_column + "]", fontsize=15)
         ax1.set_title("Growth of " + str(set_name), fontsize=25)
 
         #create line with the marking of point of induction and inducer
@@ -53,24 +55,33 @@ class GrowthObserver:
 
         plt.savefig(str(set_directory) + str(set_name) + "_hplc.png", dpi=400, bbox_inches="tight")
 
+
+
+
+
 #Terminal input (2 commands)
-data = sys.argv[1:]
-array_plot = data[[0]]                   #plot data for x and y
-df_plot = pd.DataFrame(array_plot)
-plot_name = data[[1]]                    #name of the plot and the final file
+# data = sys.argv[1:]
+# array_plot = data[[0]]                   #plot data for x (time) and y (OD values)
+# df_plot = pd.DataFrame(array_plot)
+# plot_name = data[[1]]                    #name of the plot and the final file
+
+#optional input for quick testing
+df_plot = pd.read_fwf("/home/Freiherr/PycharmProjects/Labdata_analyzer/Test_BacGrowth/bac_growth.txt", index = "h")
+plot_name = "Origami B pASK75 MBP - LepR 2D"
+
 
 #Config File input (3 inputs, compare BacGrowth.ini)
 config_file = "BacGrowth.ini"
 config = ConfigParser()
 config.read(config_file)
 config.sections()
-df_config = pd.DataFrame(list(config["growth_bacteria_pLot"]))
-set_path = df_config.iloc[0,0]
-graph_color = df_config.iloc[1,0]        #color of graph
-time_scale = df_config[2,0]              #hours or minutes
-induction_point = df_config[3,0]         #when was the Inducer added
-set_inducer = df_config[4,0]             #sets the name of the induction agent
-set_OD = df_config[5,0]                  #set the wavelength used for the OD measurement
+
+set_path = config["growth_bacteria_pLot"]["path"]
+graph_color = config["growth_bacteria_pLot"]["graph_color"]      #color of graph
+induction_point = config["growth_bacteria_pLot"]["induction_point"]       #when was the Inducer added
+set_inducer = config["growth_bacteria_pLot"]["inducer"]           #sets the name of the induction agent
+set_OD = config["growth_bacteria_pLot"]["set_OD"]                #set the wavelength used for the OD measurement
 
 
-GrowthObserver.plot_growth(array_plot, set_name=plot_name, set_color=graph_color, set_time_scale = time_scale, induction_point = induction_point, set_inducer= set_inducer, set_OD = set_OD)
+GrowthObserver.plot_growth(df_plot, set_name = plot_name, set_color = graph_color, induction_point = induction_point, set_inducer= set_inducer, set_OD = set_OD)
+#/home/Freiherr/PycharmProjects/Labdata_analyzer/
