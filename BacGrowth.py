@@ -16,18 +16,18 @@ class GrowthObserver:
         self.df = df
 
     path = StandardConfig.FolderPath.find_folderpath()    #path of the folder with the scripts
-    def plot_growth(df, set_name="bacteria_plot", set_color="red", set_directory=path + "/output/", induction_point ="0", set_inducer = "IPTG", set_OD = "600"):
-        df_column = df.columns[0]
+    def plot_growth(self, set_name="bacteria_plot", set_color="red", set_path =path + "/output/", induction_point ="0", set_inducer = "IPTG", set_OD = "600"):
+        df_column = self.columns[0]
         plt.figure(figsize=(15, 10))
         ax1 = plt.subplot(1, 1, 1)
-        ax1.scatter(df, x=df_column, y="OD", color=str(set_color))
+        ax1.scatter(data=self, x=df_column, y="OD", color=str(set_color))
         ax1.set_ylabel("$OD_" + set_OD + "$", fontsize=15)
         ax1.set_xlabel("Time [" + df_column + "]", fontsize=15)
         ax1.set_title("Growth of " + str(set_name), fontsize=25)
 
         #create line with the marking of point of induction and inducer
-        x_induction = self[int(induction_point), 0]
-        y_induction = self[int(induction_point), 1]
+        x_induction = self.iloc[int(induction_point), 0]
+        y_induction = self.iloc[int(induction_point), 1]
 
 
         x1, y1 = [x_induction, x_induction], [-0.5, y_induction] # requires two points for line --> nametag point and graph point
@@ -39,11 +39,13 @@ class GrowthObserver:
         x = []                  #Interpolation of scatter points
         y = []
 
-        for i in self:
+        i=0
+        while i <= len(self)-1:
             x_append = self.iloc[i, 0]
             y_append = self.iloc[i, 1]
             x.append(x_append)
             y.append(y_append)
+            i = i+1
 
         # x_new, bspline, y_new
         x_new = np.linspace(1, 5, 50)
@@ -53,7 +55,7 @@ class GrowthObserver:
         # Plot the new data points
         plt.plot(x_new, y_new)
 
-        plt.savefig(str(set_directory) + str(set_name) + "_hplc.png", dpi=400, bbox_inches="tight")
+        plt.savefig(str(set_path) + str(set_name) + "_hplc.png", dpi=400, bbox_inches="tight")
 
 
 
@@ -83,5 +85,5 @@ set_inducer = config["growth_bacteria_pLot"]["inducer"]           #sets the name
 set_OD = config["growth_bacteria_pLot"]["set_OD"]                #set the wavelength used for the OD measurement
 
 
-GrowthObserver.plot_growth(df_plot, set_name = plot_name, set_color = graph_color, induction_point = induction_point, set_inducer= set_inducer, set_OD = set_OD)
+GrowthObserver.plot_growth(df_plot, set_name = plot_name, set_color = graph_color, set_path = set_path, induction_point = induction_point, set_inducer= set_inducer, set_OD = set_OD)
 #/home/Freiherr/PycharmProjects/Labdata_analyzer/
