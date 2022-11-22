@@ -36,21 +36,7 @@ class HPLC:
             return df_hplc_clean
 
     def clean_frac(self, txt_name="unnamed"):
-        # generate secondary table for fractions
-        if len(self.df3.iloc[0, 0].split("\t")) >= 12:
-            j = 2
-            sum_fractions_hplc = []
-            while self.df3.iloc[j, 0].split("\t")[11] != '"Waste"':
-                intermediate0_frac = str(self.df3.iloc[j, 0]).split("\t")[10]
-                intermediate1_frac = str(self.df3.iloc[j, 0]).split("\t")[11]
-                sum_fractions_hplc.append([intermediate0_frac, intermediate1_frac])
-                j = j + 1
-            df_frac_clean = pd.DataFrame(sum_fractions_hplc, columns=["Volume", "Fraction number"])
-            return df_frac_clean
-        else:
-            df_frac_clean = pd.DataFrame(["nothing"])
-            print("For graph " + str(txt_name) + ", fractions could not be printed!")
-            return df_frac_clean
+
 
     def hplc_plot(self, df_frac=0, set_show=1, set_name="protein", set_directory=str(path) + "/output/", set_color="r"):
         plt.figure(figsize=(25, 10))

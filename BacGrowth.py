@@ -2,11 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
-import sys
 from configparser import ConfigParser
 
-# pathlib and mkdir
-import StandardConfig
 
 
 
@@ -15,13 +12,13 @@ class GrowthObserver:
     def __init__(self, df):
         self.df = df
 
-    path = StandardConfig.FolderPath.find_folderpath()    #path of the folder with the scripts
-    def plot_growth(self, set_name="bacteria_plot", set_color="red", set_path =path + "/output/", induction_point ="0", set_inducer = "IPTG", set_OD = "600"):
+
+    def plot_growth(self, set_name, set_color, set_path, induction_point, set_inducer, set_OD):
         df_column = self.columns[0]
         plt.figure(figsize=(15, 10))
         ax1 = plt.subplot(1, 1, 1)
         ax1.scatter(data=self, x=df_column, y="OD", color=str(set_color))
-        ylabel = "$OD_" + set_OD + "$"
+        ylabel = "$OD_{" + str(set_OD) + "}$"
         ax1.set_ylabel(ylabel, fontsize=15)
         ax1.set_xlabel("Time [" + df_column + "]", fontsize=15)
         ax1.set_title("Growth of " + str(set_name), fontsize=25, fontweight ="semibold")
