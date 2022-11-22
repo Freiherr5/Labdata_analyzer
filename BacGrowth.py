@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import interpolate
+from scipy.interpolate import interp1d
 import sys
 from configparser import ConfigParser
 
@@ -21,9 +21,10 @@ class GrowthObserver:
         plt.figure(figsize=(15, 10))
         ax1 = plt.subplot(1, 1, 1)
         ax1.scatter(data=self, x=df_column, y="OD", color=str(set_color))
-        ax1.set_ylabel("$OD_" + set_OD + "$", fontsize=15)
+        ylabel = "$OD_" + set_OD + "$"
+        ax1.set_ylabel(ylabel, fontsize=15)
         ax1.set_xlabel("Time [" + df_column + "]", fontsize=15)
-        ax1.set_title("Growth of " + str(set_name), fontsize=25)
+        ax1.set_title("Growth of " + str(set_name), fontsize=25, fontweight ="semibold")
 
         #create line with the marking of point of induction and inducer
         x_induction = self.iloc[int(induction_point), 0]
@@ -32,11 +33,10 @@ class GrowthObserver:
 
         x1, y1 = [x_induction, x_induction], [-0.5, y_induction] # requires two points for line --> nametag point and graph point
         plt.plot(x1, y1, color="black")
-        plt.text(float(x_induction), - 0.5, set_inducer)  #name induction agent for protein production
+        plt.text(float(x_induction), -1, set_inducer, fontsize=15)  #name induction agent for protein production
 
-
-
-        x = []                  #Interpolation of scatter points
+        # Interpolation of scatter point
+        x = []
         y = []
 
         i=0
@@ -47,13 +47,12 @@ class GrowthObserver:
             y.append(y_append)
             i = i+1
 
-        # x_new, bspline, y_new
-        x_new = np.linspace(1, 5, 50)
-        bspline = interpolate.make_interp_spline(x, y)
-        y_new = bspline(x_new)
+        #create new x and y values for interpolation graph
+        y_new = interp1d(x, y, kind="cubic")
+        x_new = np.linspace(x[0], x[-1], num=100, enpoint=True) #first two values set the range --> needs to be extracted from x
 
         # Plot the new data points
-        plt.plot(x_new, y_new)
+        plt.plot(x_new, y_new, "-")
 
         plt.savefig(str(set_path) + str(set_name) + "_hplc.png", dpi=400, bbox_inches="tight")
 
