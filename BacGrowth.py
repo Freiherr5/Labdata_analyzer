@@ -35,17 +35,9 @@ class GrowthObserver:
         plt.plot(x1, y1, color="black")
         plt.text(float(x_induction), -1, set_inducer, fontsize=15)  #name induction agent for protein production
 
-        # Interpolation of scatter point
-        x = []
-        y = []
-
-        i=0
-        while i <= len(self)-1:
-            x_append = self.iloc[i, 0]
-            y_append = self.iloc[i, 1]
-            x.append(x_append)
-            y.append(y_append)
-            i = i+1
+        #Transform dataframe in 2 arrays for x (time) and y (OD)
+        x = self[df_column].to_numpy()
+        y = self["OD"].to_numpy()
 
         #create new x and y values for interpolation graph
         y_new = interp1d(x, y, kind="cubic")
@@ -62,8 +54,7 @@ class GrowthObserver:
 
 #Terminal input (2 commands)
 # data = sys.argv[1:]
-# array_plot = data[[0]]                   #plot data for x (time) and y (OD values)
-# df_plot = pd.DataFrame(array_plot)
+# df_plot = pd.read_fwf(data[[0]])         #plot data for x (time) and y (OD values)
 # plot_name = data[[1]]                    #name of the plot and the final file
 
 #optional input for quick testing
@@ -77,11 +68,11 @@ config = ConfigParser()
 config.read(config_file)
 config.sections()
 
-set_path = config["growth_bacteria_pLot"]["path"]
-graph_color = config["growth_bacteria_pLot"]["graph_color"]      #color of graph
+set_path = config["growth_bacteria_pLot"]["path"]                         #path of target folder to save the graph
+graph_color = config["growth_bacteria_pLot"]["graph_color"]               #color of graph
 induction_point = config["growth_bacteria_pLot"]["induction_point"]       #when was the Inducer added
-set_inducer = config["growth_bacteria_pLot"]["inducer"]           #sets the name of the induction agent
-set_OD = config["growth_bacteria_pLot"]["set_OD"]                #set the wavelength used for the OD measurement
+set_inducer = config["growth_bacteria_pLot"]["inducer"]                   #sets the name of the induction agent
+set_OD = config["growth_bacteria_pLot"]["set_OD"]                         #set the wavelength used for the OD measurement
 
 
 GrowthObserver.plot_growth(df_plot, set_name = plot_name, set_color = graph_color, set_path = set_path, induction_point = induction_point, set_inducer= set_inducer, set_OD = set_OD)
