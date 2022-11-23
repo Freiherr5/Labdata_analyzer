@@ -57,8 +57,8 @@ class SpectrumPlot:
 
 #Terminal input (2 commands)
 data = sys.argv[1:]
-set_path_folder = data[[0]]               #the idea is to generate up to 3 graphs in one figure if a comparison is needed
-plot_name = data[[1]]                    #name of the plot and the final file
+set_path_folder = data[[1]]               #the idea is to generate up to 3 graphs in one figure if a comparison is needed
+plot_name = data[[2]]                    #name of the plot and the final file
 
 
 #Config File input (5 inputs, compare CD.ini)
