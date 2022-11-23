@@ -1,5 +1,6 @@
 """
 Program awareness of path of the program package and folder creation if not available
+(Type: Library)
 """
 import pandas as pd
 import glob

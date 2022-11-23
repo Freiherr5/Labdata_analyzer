@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import AlignPlot
 import sys
 from configparser import ConfigParser
 
@@ -36,9 +37,9 @@ class HPLC:
             return df_hplc_clean
 
     def clean_frac(self, txt_name="unnamed"):
+        pass
 
-
-    def hplc_plot(self, df_frac=0, set_show=1, set_name="protein", set_directory=str(path) + "/output/", set_color="r"):
+    def hplc_plot(self, df_frac, set_name, set_directory, set_color):
         plt.figure(figsize=(25, 10))
         ax1 = plt.subplot(1, 1, 1)
 
@@ -63,8 +64,6 @@ class HPLC:
                 plt.text(float(df_frac.iloc[p, 0]), -20.0, df_frac.iloc[p, 1])
                 p = p + 1
 
-        if set_show != 0:
-            plt.show()
-        else:
-            plt.savefig(str(set_directory) + str(set_name) + "_hplc.png", dpi=400, bbox_inches="tight")
+
+        plt.savefig(str(set_directory) + str(set_name) + "_hplc.png", dpi=400, bbox_inches="tight")
 

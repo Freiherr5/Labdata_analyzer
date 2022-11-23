@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 from configparser import ConfigParser
-
+from StandardConfig import FolderPath
 
 
 
@@ -50,22 +51,23 @@ class GrowthObserver:
 
 
 #Terminal input (2 commands)
-# data = sys.argv[1:]
-# df_plot = pd.read_fwf(data[[0]])         #plot data for x (time) and y (OD values)
-# plot_name = data[[1]]                    #name of the plot and the final file
+#data = sys.argv[1:]
+#set_path= data[[0]]
+#df_plot = pd.read_fwf(data[[0]])         #plot data for x (time) and y (OD values)
+#plot_name = data[[1]]                    #name of the plot and the final file
 
 #optional input for quick testing
-df_plot = pd.read_fwf("/home/Freiherr/PycharmProjects/Labdata_analyzer/Test_BacGrowth/bac_growth.txt", index = "h")
+set_path = FolderPath.find_folderpath()
+df_plot = pd.read_fwf(set_path, index = "h")
 plot_name = "Origami B pASK75 MBP - LepR 2D"
 
 
-#Config File input (3 inputs, compare BacGrowth.ini)
+#Config File input (4 inputs, compare BacGrowth.ini)
 config_file = "BacGrowth.ini"
 config = ConfigParser()
 config.read(config_file)
 config.sections()
 
-set_path = config["growth_bacteria_pLot"]["path"]                         #path of target folder to save the graph
 graph_color = config["growth_bacteria_pLot"]["graph_color"]               #color of graph
 induction_point = config["growth_bacteria_pLot"]["induction_point"]       #when was the Inducer added
 set_inducer = config["growth_bacteria_pLot"]["inducer"]                   #sets the name of the induction agent

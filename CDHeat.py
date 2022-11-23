@@ -4,10 +4,6 @@ import matplotlib.pyplot as plt
 import sys
 from configparser import ConfigParser
 
-# pathlib and mkdir
-import StandardConfig
-
-
 class HeatPlot:
     # set base path independant of device:
     path = str(pathlib.Path().absolute())  # /home/user/Analyzer_Hagn_Data_package
@@ -88,3 +84,21 @@ class HeatPlot:
             plt.show()
         else:
             plt.savefig(str(set_directory) + str(set_name) + "_heat.png", dpi=400, bbox_inch= "tight")
+
+#Terminal input (2 commands)
+data = sys.argv[1:]
+set_path_folder= data[[0]]               #the idea is to generate up to 3 graphs in one figure if a comparison is needed
+plot_name = data[[1]]                    #name of the plot and the final file
+
+#Config File input (5 inputs, compare CD.ini)
+config_file = "CD.ini"
+config = ConfigParser()
+config.read(config_file)
+config.sections()
+
+graph_color1 = config["CD_heat"]["graph_color1"]
+graph_color2 = config["CD_heat"]["graph_color2"]
+graph_color3 = config["CD_heat"]["graph_color3"]
+start_temp = config["CD_heat"]["start_temp"]
+max_temp = config["CD_heat"]["max_temp"]
+linear_regression_range = config["CD_heat"]["linear_regression_range"]
