@@ -12,15 +12,19 @@ class SpectrumPlot:
 
     def clean_spectrum(df2, path):
         first_df_name = df2.iloc[0,0]
-        initial_df = pd.read_fwf(path + "/" + first_df_name)
-
+        initial_df = pd.read_fwf(path + "/" + first_df_name, sep= "\\t", columns=["wavelength", "CD_value", "Voltage"])
+        initial_df = initial_df.drop(columns="Voltage")
         i = 1
         while i <= len(df2):
-            add_df = df2.iloc[i,0]
+            add_df_name = df2.iloc[i,0]
+            add_df = pd.read_fwf(path + "/" + add_df_name, sep="\\t", columns=["wavelength", "CD_value", "Voltage"])
+            add_df = add_df.drop(columns="Voltage")
             initial_df.join(add_df)
             i = i+1
 
+        # clean DataFrame from junk data on top and bottom of the table
         droptop_df = initial_df.drop(initial_df.index[0:12])
+        dropbottom_df = droptop_df.drop()
 
 
 
