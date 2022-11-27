@@ -53,7 +53,6 @@ class GelVisualizer:
 #optional input for quick testing on my surface (Windows system)
 set_path_folder = "C:\\Users\\Feiler Werner\\Desktop\\gel_test_folder\\"
 set_file_name = "test_gel"
-gel_name = "Testing the Heading"
 marker = "Protein_unstained_marker"
 
 
@@ -63,8 +62,10 @@ config = ConfigParser()
 config.read(config_file)
 config.sections()
 
+gel_name = config["gel_slots"]["gel_name"]
 factor = float(config["fine_adjustment_of_gel_slots"]["factor"])
 x_shift = float(config["fine_adjustment_of_gel_slots"]["x_shift"])
+x_shift_marker = float(config["fine_adjustment_of_gel_slots"]["x_shift_marker"])
 
 
 #create DataFrame with gel_slot Tag and its position
@@ -83,7 +84,6 @@ gel_slots = config["gel_slots"]["gel_slots"]
 sample_df = pd.DataFrame(sample_array, columns=["slot_name", "x_pos"])
 
 
-x_shift_marker = -30
 marker_df = MarkerPicker.get_marker_postion(gel_slots, x_shift_marker, marker = marker, set_file_name = set_file_name, set_path_folder = set_path_folder)
 
 

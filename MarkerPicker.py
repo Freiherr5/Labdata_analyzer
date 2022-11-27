@@ -22,7 +22,7 @@ def get_marker_postion(gel_slots, x_shift_marker, marker, set_file_name, set_pat
 
     width_marker = int(width) / int(gel_slots)
     midpoint_marker = width_marker/2 + x_shift_marker            #shifting the window along the x axis to only focus on the marker
-    range_marker = width_marker * 0.1
+    range_marker = width_marker * 0.05
 
     #cropping parameters for gel slice
     left = midpoint_marker - range_marker
