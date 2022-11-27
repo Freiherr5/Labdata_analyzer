@@ -41,7 +41,7 @@ class GelVisualizer:
         ax.set_title(gel_name, fontsize=20)
         ax.axis("off")
         plt.imshow(img)
-        plt.savefig(str(path) + str(file) + "_gel.png", dpi=400, bbox_inches="tight")
+        plt.savefig(str(path) + str(file) + ".png", dpi=400, bbox_inches="tight")
 
 
 #Terminal input (2 commands)
