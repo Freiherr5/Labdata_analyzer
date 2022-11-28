@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageEnhance, ImageOps
 from configparser import ConfigParser
 
 
@@ -36,6 +36,9 @@ def get_marker_postion(gel_slots, x_shift_marker, marker, set_file_name, set_pat
     im1 = im.crop((left, upper, right, lower))
     im_grey = im1.convert("1")
 
+    #for bright agarose gels the picture needs to be inverted
+    if marker == "Agarose_DNA_marker_1kb":
+        im_grey = ImageOps.invert(im_grey)
 
     im_grey.show()
 

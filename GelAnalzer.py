@@ -26,12 +26,12 @@ class GelVisualizer:
 
         i = 0
         while i <= int(gel_slots) -1:
-            ax.text(int(sample_df.iloc[i,1]), int(height), sample_df.iloc[i,0], rotation=45, ha = "right", va = "top", fontsize = 15)
+            ax.text(int(sample_df.iloc[i,1]), int(height), sample_df.iloc[i,0], rotation=45, ha = "right", va = "top", fontsize = 10)
             i = i+1
 
         i = 0
         while i <= len(marker_df)-1:
-            ax.text(int(width*(-0.01)), int(marker_df.iloc[i, 1]), marker_df.iloc[i, 0], ha="right", va="top", fontsize = 7)
+            ax.text(int(width*(-0.01)), int(marker_df.iloc[i, 1]), marker_df.iloc[i, 0], ha="right", va="top", fontsize = 4)
             i = i+1
 
         ax.set_title(gel_name, fontsize=20)
@@ -47,9 +47,9 @@ class GelVisualizer:
 #plot_name = data[[2]]                    #name of the plot and the final file
 
 #optional input for quick testing on my surface (Windows system)
-set_path_folder = "C:\\Users\\Feiler Werner\\Desktop\\gel_test_folder\\"
-set_file_name = "test_gel"
-marker = "Protein_unstained_marker"
+set_path_folder = "C:\\Users\\Feiler Werner\\Desktop\\Skerra_data\\Agarose_gels\\"
+set_file_name = "20221121 gel2d3d restrict xbai ncoi"
+marker = "Agarose_DNA_marker_1kb"
 
 
 #Config File input
@@ -66,7 +66,7 @@ x_shift_marker = float(config["fine_adjustment_of_gel_slots"]["x_shift_marker"])
 
 #create DataFrame with gel_slot Tag and its position
 width, height = Image.open(str(set_path_folder) + str(set_file_name) + ".jpg").size
-slot_pixel_width = int(int(width) / int(config["gel_slots"]["gel_slots"]))
+slot_pixel_width = int(int(width) / int(config["gel_slots"]["gel_slots"])+1)
 
 sample_array = []
 i=0
@@ -83,4 +83,4 @@ sample_df = pd.DataFrame(sample_array, columns=["slot_name", "x_pos"])
 marker_df = MarkerPicker.get_marker_postion(gel_slots, x_shift_marker, marker = marker, set_file_name = set_file_name, set_path_folder = set_path_folder)
 
 
-GelVisualizer.gel_plotter(path = set_path_folder, gel_slots= gel_slots, file = set_file_name, gel_name = gel_name, marker_df = marker_df, sample_df = sample_df, height = height, width = width)
+GelVisualizer.gel_plotter(path = set_path_folder, gel_slots = gel_slots, file = set_file_name, gel_name = gel_name, marker_df = marker_df, sample_df = sample_df, height = height, width = width)
