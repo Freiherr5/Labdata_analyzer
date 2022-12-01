@@ -31,7 +31,7 @@ class GelVisualizer:
 
         i = 0
         while i <= len(marker_df)-1:
-            ax.text(int(width*(-0.01)), int(marker_df.iloc[i, 1]), marker_df.iloc[i, 0], ha="right", va="top", fontsize = 4)
+            ax.text(int(width*(-0.01)), int(marker_df.iloc[i, 1]), marker_df.iloc[i, 0], ha="right", va="top", fontsize = 7)
             i = i+1
 
         ax.set_title(gel_name, fontsize=20)
@@ -47,9 +47,9 @@ class GelVisualizer:
 #plot_name = data[[2]]                    #name of the plot and the final file
 
 #optional input for quick testing on my surface (Windows system)
-set_path_folder = "C:\\Users\\Feiler Werner\\Desktop\\Skerra_data\\Agarose_gels\\"
-set_file_name = "20221121 gel2d3d restrict xbai ncoi"
-marker = "Agarose_DNA_marker_1kb"
+set_path_folder = "C:\\Users\\Feiler Werner\\Desktop\\Skerra_data\\SDS_gels\\"
+set_file_name = "20221130 2D MBP PDI sec part2"
+marker = "Protein_unstained_marker"
 
 
 #Config File input

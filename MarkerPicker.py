@@ -34,7 +34,7 @@ def get_marker_postion(gel_slots, x_shift_marker, marker, set_file_name, set_pat
     im = enhancer.enhance(1.2)
 
     im1 = im.crop((left, upper, right, lower))
-    im_grey = im1.convert("1")
+    im_grey = im1.convert("L")
 
     #for bright agarose gels the picture needs to be inverted
     if marker == "Agarose_DNA_marker_1kb":
