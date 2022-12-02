@@ -48,7 +48,7 @@ def standard_weight_SEC(path, file_name, V0, V_total, color, heading, buffer, ty
         # text above each datapoint
         ax.text(df_mass_standard.iloc[i, 5], df_mass_standard.iloc[i, 4]+df_mass_standard.iloc[0, 4]*0.01, df_mass_standard.iloc[i, 1], fontsize = 10, ha="center")
         # add legend on the top right to show context
-        ax.text(x_max, y_max - (y_max*((1.5+i)/50)), df_mass_standard.iloc[i, 1] + " = " + df_mass_standard.iloc[i, 0] + " (" + str(df_mass_standard.iloc[i, 2]) + " kDa )", fontsize = 10, ha = "left")
+        ax.text(x_max, y_max - (y_max*((1.5+i)/50)), df_mass_standard.iloc[i, 1] + " = " + df_mass_standard.iloc[i, 0] + " (" + str(df_mass_standard.iloc[i, 2]) + " kDa)", fontsize = 10, ha = "left")
         i = i+1
     ax.text(x_max, y_max - (y_max * ((1.5 + i+3) / 50)), "Column: " + type, fontsize=10, ha="left")
     ax.text(x_max, y_max - (y_max * ((1.5 + i+4) / 50)), "Buffer:" + config[buffer]["run_b"], fontsize=10, ha="left")
