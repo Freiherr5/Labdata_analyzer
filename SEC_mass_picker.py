@@ -39,8 +39,8 @@ def standard_weight_SEC(path, file_name, V0, V_total, color, heading):
     x = df_mass_standard["logMW"].to_numpy()
     m, b = np.polyfit(x, y, 1)
     regression_formula = str(m) + " * x + " + str(b)
-    plt.plot(x, m*x+b, "--", color = color)
-    plt.text(round(float(df_mass_standard["logMW"].max()), 3), round(float(df_mass_standard["Kav"].max()), 3), "regression: " + str(regression_formula), ha= "right")
+    plt.plot(x, round(m, 3)*x+round(b,3), "--", color = color)
+    plt.text(float(df_mass_standard["logMW"].max()), float(df_mass_standard["Kav"].max()), "regression: " + str(regression_formula), ha= "right")
     plt.xticks([1.0, 2.0, 3.0], ["10,000 Da", "100,000 Da", "1,000,000 Da"])
 
     i = 0
