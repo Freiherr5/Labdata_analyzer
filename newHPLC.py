@@ -10,7 +10,7 @@ class HPLC:
     def __init__(self):
 
 
-    def sec_standard(path, name_excel):
+    def sec_norm(path, name_excel):
         # clean dataframe for plotting
 
         df = pd.read_excel(str(path) + str(name_excel))
@@ -97,4 +97,4 @@ subgraphs_df = pd.DataFrame(array_subgraphs, columns=["name_legend", "color"])  
 
 txt_name_df = StandardConfig.TxtLister.txt_lister(set_path_folder) # returns dataframe with names of txt files
 
-sec_standard(path=set_path_folder, name_excel=txt_name_df)
+HPLC.sec_norm(path=set_path_folder, name_excel=txt_name_df)
