@@ -77,6 +77,11 @@ def get_marker_postion(gel_slots, x_shift_marker, marker, set_file_name, set_pat
     df_marker_postion = pd.DataFrame(where_marker_array)
     return df_marker_postion
 
+
+
+
+
+
 #compare original and post processing of the marker
 
 #fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(3,8), sharex= True, sharey=True)

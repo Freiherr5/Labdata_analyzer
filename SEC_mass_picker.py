@@ -5,6 +5,14 @@ from configparser import ConfigParser
 import math
 
 def standard_weight_SEC(path, file_name, V0, V_total, color, heading, buffer, type):
+
+
+    config_file = "HPLC.ini"
+    config = ConfigParser()
+    config.read(config_file)
+    config.sections()
+
+
     df_mass_standard = pd.read_csv(path + file_name + ".txt")
 
     # addition of new parameters to the dataframe; base form (name, abbreviation, MW, ml)
@@ -37,7 +45,7 @@ def standard_weight_SEC(path, file_name, V0, V_total, color, heading, buffer, ty
 
     y = df_mass_standard["Kav"].to_numpy()
     x = df_mass_standard["logMW"].to_numpy()
-    m, b = np.polyfit(x, y, 1)
+    m, b = np.polyfit(x, y, 1)    #create linear regression with x and y arrays from above using numpy
     regression_formula = str(round(m, 3)) + " * x + " + str(round(b,3))
     plt.plot(x, m*x+b, "--", color = color)
     plt.text(float(df_mass_standard["logMW"].max()), float(df_mass_standard["Kav"].max()), "Regression: " + str(regression_formula), ha= "right")
@@ -54,12 +62,23 @@ def standard_weight_SEC(path, file_name, V0, V_total, color, heading, buffer, ty
     ax.text(x_max, y_max - (y_max * ((1.5 + i+4) / 50)), "Buffer:" + config[buffer]["run_b"], fontsize=10, ha="left")
     plt.savefig(str(path) + str(file_name) + ".png", dpi=400, bbox_inches="tight")
 
+    # linear regression parameters are added to the config file for the HPLC_excel.py script (determining molecular weight)
+    config_file = "SEC_standard.ini"
+    config = ConfigParser()
+    config.read(config_file)
+    config.sections()
+
+    config["regression_parameters"]["a"] = str(m)
+    config["regression_parameters"]["b"] = str(b)
+    with open('SEC_standard.ini', 'w') as configfile:  # save
+        config.write(configfile)
+
+
+# test usage for my windows surface only
 
 path = "C:\\Users\\Feiler Werner\\Desktop\\Skerra_data\\SEC\\"
 file_name = "SEC standards"
 heading = "SEC standard proteins"
-
-
 
 config_file = "HPLC.ini"
 config = ConfigParser()
