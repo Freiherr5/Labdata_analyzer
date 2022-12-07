@@ -133,13 +133,21 @@ class HPLC:
             plt.text(0.0, -20.0, "Fractions:", fontsize=15)
             p = 0
             while p <= (len(df_3) - 1):
-                plt.text(float(df_3.iloc[p, 0]), -20.0, df_3.iloc[p, 1], fontsize=15)
+                plt.text(float(df_3.iloc[p, 0]), -20.0, df_3.iloc[p, 1], fontsize=15, ha="center")
                 p = p + 1
 
+        # descriptive elements of the plot: column, buffer, V0 location
         config_file = "HPLC.ini"
         config = ConfigParser()
         config.read(config_file)
         config.sections()
+
+        V0_x = float(config["HPLC_config"]["V0"])
+        V0_y = df.iloc[0, 1]
+        x1, y1 = [V0_x, V0_x], [0, V0_y]
+        plt.plot(x1, y1, "--", color = "black")
+        ax1.text(V0_x, V0_y * (-0.05), "V0 = " + str(V0) + " ml", ha="right")
+
 
         type = config["HPLC_config"]["type"]
         buffer = config["HPLC_config"]["buffer"]
