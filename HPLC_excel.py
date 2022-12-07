@@ -115,7 +115,7 @@ class HPLC:
         df = df.where(df["ml"] > V0_max).dropna()
         i = 0
         while i <= len(df)-1:
-            plt.text(df.iloc[i, 0], df.iloc[i, 1], str(df.iloc[i, 2]) + " kDa", fontsize=10)
+            plt.text(df.iloc[i, 0], df.iloc[i, 1] + (df_mAU["mAU"].max()*0.01), str(df.iloc[i, 2]) + " kDa", fontsize=10, va="bottom")
             i = i +1
 
 
