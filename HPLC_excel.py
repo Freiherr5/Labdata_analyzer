@@ -41,7 +41,7 @@ class HPLC:
         while i <= len(V_elu_df)-1:
             MW_i = round(math.pow(10, ((((float(df.iloc[int(V_elu_df.values[i]), 0])-V0)/(V_total-V0))-b)/a)), 1)
             ml_i = float(df.iloc[int(V_elu_df.values[i]), 0])
-            UV_Vis_signal = float(df.iloc[int(V_elu_df.values[i]), 1]) + float(df.iloc[int(V_elu_df.values[0]), 1])*0.05
+            UV_Vis_signal = float(df.iloc[int(V_elu_df.values[i]), 1]) + float(df.iloc[int(V_elu_df.values[0]), 1])*0.10
             array_ml_MW.append([ml_i, UV_Vis_signal, MW_i])
             i = i + 1
 
@@ -115,8 +115,7 @@ class HPLC:
         df = df.where(df["ml"] > V0_max).dropna()
         i = 0
         while i <= len(df)-1:
-
-            plt.text(df.iloc[i, 0], df.iloc[i, 1], str(df.iloc[i, 2]) + " kDa", fontsize=15)
+            plt.text(df.iloc[i, 0], df.iloc[i, 1], str(df.iloc[i, 2]) + " kDa", fontsize=10)
             i = i +1
 
 
@@ -134,8 +133,20 @@ class HPLC:
             plt.text(0.0, -20.0, "Fractions:", fontsize=15)
             p = 0
             while p <= (len(df_3) - 1):
-                plt.text(float(df_3.iloc[p, 0]), -20.0, df_3.iloc[p, 1])
+                plt.text(float(df_3.iloc[p, 0]), -20.0, df_3.iloc[p, 1], fontsize=15)
                 p = p + 1
+
+        config_file = "HPLC.ini"
+        config = ConfigParser()
+        config.read(config_file)
+        config.sections()
+
+        type = config["HPLC_config"]["type"]
+        buffer = config["HPLC_config"]["buffer"]
+        y_max = df_mAU["mAU"].max()
+        x_max = df_mAU["ml_mAU"].max()
+        ax1.text(x_max, y_max, "Column: " + type, fontsize=10, ha="right")
+        ax1.text(x_max, y_max - (y_max * 0.03), "Buffer:" + config[buffer]["run_b"], fontsize=10, ha="right")
 
         plt.savefig(str(path) + str(name) + "_hplc.png", dpi=400, bbox_inches="tight")
 
