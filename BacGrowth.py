@@ -40,12 +40,10 @@ class GrowthObserver:
         x = df[df_column].to_numpy()
         y = df["OD"].to_numpy()
 
-        #create new x and y values for interpolation graph
-        f_cubic = interp1d(x, y, kind="cubic")
-        x_new = np.linspace(x[0], x[-1], 25) #first two values set the range --> needs to be extracted from x
+        #create new x and y values for polynome fit
 
-        # Plot the new data points
-        plt.plot(x_new, f_cubic(x_new), "-")
+        poly = np.polyfit(x, y, deg = 4)
+        plt.plot(np.polyval(poly, x), "--", color = set_color)
 
         plt.savefig(str(set_path) + str(set_name) + "_hplc.png", dpi=400, bbox_inches="tight")
 
@@ -60,7 +58,7 @@ class GrowthObserver:
 #plot_name = data[[2]]                    #name of the plot and the final file
 
 #optional input for quick testing on my surface (Windows system)
-set_path_folder = "C:\\Users\\Feiler Werner\\Desktop\\20221123_2D3Dgrow\\"
+set_path_folder = "C:\\Users\\Feiler Werner\\Desktop\\Skerra_data\\20221123_2D3Dgrow\\"
 set_file_name = "3D.txt"
 df_plot = pd.read_fwf(set_path_folder + set_file_name, index = "h")
 plot_name = "Origami B pASK75 MBP-LepR3D-PDI"
