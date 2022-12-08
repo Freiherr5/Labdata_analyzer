@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import AlignPlot
 import matplotlib.pyplot as plt
 from configparser import ConfigParser
@@ -83,6 +82,8 @@ class HPLC:
 
 
     def hplc_plot(array_df, df, name, path, color):
+
+        # unpack DataFrames from the array and give them a
         df_mAU = array_df[0]
         df_2 = ["-"]
         df_3 = ["-"]
@@ -96,6 +97,7 @@ class HPLC:
         if list(df_2.columns)[1] == "Fractions":
             df_3 = df_2
 
+        # generates the plot
         plt.figure(figsize=(25, 10))
         ax1 = plt.subplot(1, 1, 1)
 

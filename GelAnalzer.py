@@ -4,6 +4,7 @@ import matplotlib.image as mpimg
 from configparser import ConfigParser
 from PIL import Image
 import MarkerPicker
+import sys
 
 
 class GelVisualizer:

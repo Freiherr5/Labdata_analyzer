@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from PIL import Image, ImageEnhance, ImageOps
@@ -48,7 +47,7 @@ def get_marker_postion(gel_slots, x_shift_marker, marker, set_file_name, set_pat
     #print(sum_grey_1D.min())    #11
     #print(sum_grey_1D.max())    #38
 
-    # separate array in chunks
+    # separate array in chunks, avoid random biases of the gel (marker bands are usually wider than one pixel)
     array_chunk = []
     factor = 5
     i = 1
