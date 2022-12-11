@@ -112,13 +112,14 @@ class HPLC:
         ax1.set_title("Chromatogram of " + str(name), fontsize=25)
         plt.scatter(x=0, y=-20, color="white")
 
-        # MW above graph columns=["ml", "UV/Vis", "MW"]
-        V0_max = df_mAU["ml_mAU"].where(df_mAU["ml_mAU"] < float(V0)).max()
-        df = df.where(df["ml"] > V0_max).dropna()
-        i = 0
-        while i <= len(df)-1:
-            plt.text(df.iloc[i, 0], df.iloc[i, 1] + (df_mAU["mAU"].max()*0.01), str(df.iloc[i, 2]) + " kDa", fontsize=10, va="bottom")
-            i = i +1
+        if conductivity.lower() != "yes":
+            # MW above graph columns=["ml", "UV/Vis", "MW"]
+            V0_max = df_mAU["ml_mAU"].where(df_mAU["ml_mAU"] < float(V0)).max()
+            df = df.where(df["ml"] > V0_max).dropna()
+            i = 0
+            while i <= len(df)-1:
+                plt.text(df.iloc[i, 0], df.iloc[i, 1] + (df_mAU["mAU"].max()*0.01), str(df.iloc[i, 2]) + " kDa", fontsize=10, va="bottom")
+                i = i +1
 
 
         # if Conductivity column was present and wanted
@@ -144,11 +145,12 @@ class HPLC:
         config.read(config_file)
         config.sections()
 
-        V0_x = float(config["HPLC_config"]["V0"])
-        V0_y = df.iloc[0, 1]
-        x1, y1 = [V0_x, V0_x], [0, V0_y]
-        plt.plot(x1, y1, "--", color = "black")
-        ax1.text(V0_x, V0_y * (-0.05), "V0 = " + str(V0) + " ml", ha="right")
+        if conductivity.lower() != "yes":               # V0 indication for SEC
+            V0_x = float(config["HPLC_config"]["V0"])
+            V0_y = df.iloc[0, 1]
+            x1, y1 = [V0_x, V0_x], [0, V0_y]
+            plt.plot(x1, y1, "--", color = "black")
+            ax1.text(V0_x, V0_y * (-0.05), "V0 = " + str(V0) + " ml", ha="right")
 
 
         type = config["HPLC_config"]["type"]
@@ -166,8 +168,8 @@ class HPLC:
 #Terminal input (3 commands)
 #data = sys.argv[1:]
 #path= data[[0]]
-#name = pd.read_fwf(data[[1]])
-#plot_name = data[[2]]
+#name_excel = pd.read_fwf(data[[1]])
+#name = data[[2]]
 
 
 # for testing on my windows surface only
@@ -198,9 +200,12 @@ config.sections()
 a = float(config["regression_parameters"]["a"])
 b = float(config["regression_parameters"]["b"])
 
-
 array_df = HPLC.sec_norm(path = path, name_excel = name_excel)
-df_mAU = array_df[0]
-df_peaks = HPLC.peak_picker(df_mAU)
-df_MW = HPLC.calculate_MW(a, b, V0, V_total = Vtotal, V_elu_df = df_peaks, df=df_mAU)
+
+if conductivity.lower() != "yes":
+    df_mAU = array_df[0]
+    df_peaks = HPLC.peak_picker(df_mAU)
+    df_MW = HPLC.calculate_MW(a, b, V0, V_total = Vtotal, V_elu_df = df_peaks, df=df_mAU)
+else:
+    df_MW = "none for conductivity"
 HPLC.hplc_plot(array_df, df = df_MW, name = name, path = path, color = graph_color)

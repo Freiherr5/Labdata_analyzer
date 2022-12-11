@@ -53,7 +53,8 @@ class GrowthObserver:
 
 #Terminal input (2 commands)
 #data = sys.argv[1:]
-#set_path= data[[1]]
+#set_path_folder = data[[0]]
+#set_file_name = data[[1]]
 #df_plot = pd.read_fwf(data[[1]])         #plot data for x (time) and y (OD values)
 #plot_name = data[[2]]                    #name of the plot and the final file
 

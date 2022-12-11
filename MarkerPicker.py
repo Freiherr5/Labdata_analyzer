@@ -11,7 +11,6 @@ config.sections()
 gel_slots = config["gel_slots"]["gel_slots"]
 
 
-
 #get the gel slice with only the marker
 def get_marker_postion(gel_slots, x_shift_marker, marker, set_file_name, set_path_folder):
 
@@ -44,8 +43,6 @@ def get_marker_postion(gel_slots, x_shift_marker, marker, set_file_name, set_pat
 
     array_grey = np.array(im_grey)
     sum_grey_1D = pd.DataFrame(array_grey).sum(axis=1)
-    #print(sum_grey_1D.min())    #11
-    #print(sum_grey_1D.max())    #38
 
     # separate array in chunks, avoid random biases of the gel (marker bands are usually wider than one pixel)
     array_chunk = []
@@ -75,20 +72,4 @@ def get_marker_postion(gel_slots, x_shift_marker, marker, set_file_name, set_pat
 
     df_marker_postion = pd.DataFrame(where_marker_array)
     return df_marker_postion
-
-
-
-
-
-
-#compare original and post processing of the marker
-
-#fig, (ax1, ax2) = plt.subplots(ncols=2, figsize=(3,8), sharex= True, sharey=True)
-#ax1.imshow(im1)
-#ax1.set_title("original")
-#ax1.axis("off")
-#ax2.imshow(im_grey)
-#ax2.set_title("grey scale")
-#ax2.axis("off")
-#plt.savefig(str(set_path_folder) + "correction.png", dpi=400, bbox_inches="tight")
 

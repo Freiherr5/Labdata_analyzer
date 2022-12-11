@@ -45,11 +45,11 @@ def standard_weight_SEC(path, file_name, V0, V_total, color, heading, buffer, ty
 
     y = df_mass_standard["Kav"].to_numpy()
     x = df_mass_standard["logMW"].to_numpy()
-    m, b = np.polyfit(x, y, 1)    #create linear regression with x and y arrays from above using numpy
+    m, b = np.polyfit(x, y, 1)    # create linear regression with x and y arrays from above using numpy
     regression_formula = str(round(m, 3)) + " * x + " + str(round(b,3))
     plt.plot(x, m*x+b, "--", color = color)
     plt.text(float(df_mass_standard["logMW"].max()), float(df_mass_standard["Kav"].max()), "Regression: " + str(regression_formula), ha= "right")
-    plt.xticks([1.0, 2.0, 3.0], ["10,000 Da", "100,000 Da", "1,000,000 Da"])
+    plt.xticks([1.0, 2.0, 3.0], ["10,000 Da", "100,000 Da", "1,000,000 Da"])  # logarithmic x-axis with the molecular weight in Da (Dalton)
 
     i = 0
     while i <= len(df_mass_standard)-1:
@@ -58,8 +58,11 @@ def standard_weight_SEC(path, file_name, V0, V_total, color, heading, buffer, ty
         # add legend on the top right to show context
         ax.text(x_max, y_max - (y_max*((1.5+i)/50)), df_mass_standard.iloc[i, 1] + " = " + df_mass_standard.iloc[i, 0] + " (" + str(df_mass_standard.iloc[i, 2]) + " kDa)", fontsize = 10, ha = "left")
         i = i+1
+
+    # legend text with all the information about buffer and column
     ax.text(x_max, y_max - (y_max * ((1.5 + i+3) / 50)), "Column: " + type, fontsize=10, ha="left")
     ax.text(x_max, y_max - (y_max * ((1.5 + i+4) / 50)), "Buffer:" + config[buffer]["run_b"], fontsize=10, ha="left")
+
     plt.savefig(str(path) + str(file_name) + ".png", dpi=400, bbox_inches="tight")
 
     # linear regression parameters are added to the config file for the HPLC_excel.py script (determining molecular weight)
@@ -74,11 +77,19 @@ def standard_weight_SEC(path, file_name, V0, V_total, color, heading, buffer, ty
         config.write(configfile)
 
 
-# test usage for my windows surface only
 
+#Terminal input (3 commands)
+#data = sys.argv[1:]
+#path= data[[0]]
+#file_name = pd.read_fwf(data[[1]])
+#heading = data[[2]]
+
+
+# test usage for my windows surface only
 path = "C:\\Users\\Feiler Werner\\Desktop\\Skerra_data\\SEC\\"
 file_name = "SEC standards"
 heading = "SEC standard proteins"
+
 
 config_file = "HPLC.ini"
 config = ConfigParser()
