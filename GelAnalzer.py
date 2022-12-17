@@ -66,7 +66,6 @@ config.sections()
 gel_name = config["gel_slots"]["gel_name"]
 factor = float(config["fine_adjustment_of_gel_slots"]["factor"])
 x_shift = float(config["fine_adjustment_of_gel_slots"]["x_shift"])
-x_shift_marker = float(config["fine_adjustment_of_gel_slots"]["x_shift_marker"])
 
 
 #create DataFrame with gel_slot Tag and its position
@@ -85,7 +84,7 @@ gel_slots = config["gel_slots"]["gel_slots"]
 sample_df = pd.DataFrame(sample_array, columns=["slot_name", "x_pos"])
 
 
-marker_df = MarkerPicker.get_marker_position(gel_slots, x_shift_marker, marker = marker, set_file_name = set_file_name, set_path_folder = set_path_folder)
+marker_df = MarkerPicker.get_marker_position(gel_slots, marker = marker, set_file_name = set_file_name, set_path_folder = set_path_folder)
 
 
 GelVisualizer.gel_plotter(path = set_path_folder, gel_slots = gel_slots, file = set_file_name, gel_name = gel_name, marker_df = marker_df, sample_df = sample_df, height = height, width = width, marker = marker)

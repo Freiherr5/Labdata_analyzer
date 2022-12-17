@@ -13,7 +13,7 @@ gel_slots = config["gel_slots"]["gel_slots"]
 
 
 #get the gel slice with only the marker
-def get_marker_position(gel_slots, x_shift_marker, marker, set_file_name, set_path_folder):
+def get_marker_position(gel_slots, marker, set_file_name, set_path_folder):
 
     im = Image.open(str(set_path_folder) + str(set_file_name) + ".jpg")
 
@@ -39,7 +39,7 @@ def get_marker_position(gel_slots, x_shift_marker, marker, set_file_name, set_pa
     lower = height
 
     enhancer = ImageEnhance.Contrast(im)
-    im = enhancer.enhance(5)
+    im = enhancer.enhance(3)
 
     im1 = im.crop((left, upper, right, lower))
     im_grey = im1.convert("L")
