@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
-from PIL import Image, ImageEnhance, ImageOps
+from PIL import Image, ImageEnhance
 from configparser import ConfigParser
+from scipy import signal
 
 
 config_file = "GelAnalyzer.ini"
@@ -12,64 +13,52 @@ gel_slots = config["gel_slots"]["gel_slots"]
 
 
 #get the gel slice with only the marker
-def get_marker_postion(gel_slots, x_shift_marker, marker, set_file_name, set_path_folder):
+def get_marker_position(gel_slots, x_shift_marker, marker, set_file_name, set_path_folder):
 
     im = Image.open(str(set_path_folder) + str(set_file_name) + ".jpg")
 
     width, height = im.size
 
     width_marker = int(width) / int(gel_slots)
-    midpoint_marker = width_marker/2 + x_shift_marker            #shifting the window along the x axis to only focus on the marker
-    range_marker = width_marker * 0.05
 
-    #cropping parameters for gel slice
+    # create an array with the gel slice (left side) of the maker, determine the concentration of the signal (peak) and set it as point for the window
+
+    im_grey_pre = im.convert("L")
+    # for bright agarose gels the picture needs to be inverted
+    array_grey_pre = np.array(im_grey_pre)
+    sum_grey_1D_x_axis = pd.DataFrame(array_grey_pre).sum(axis=0).to_numpy() # column wise adding of values, creates series of sums, then array
+    peaks_x = pd.DataFrame(signal.find_peaks(sum_grey_1D_x_axis, prominence=5000)).transpose()[0]
+    midpoint_marker = peaks_x[0]
+
+    range_marker = width_marker * 0.13
+
+    # cropping parameters for gel slice
     left = midpoint_marker - range_marker
     upper = 0
     right = midpoint_marker + range_marker
     lower = height
 
     enhancer = ImageEnhance.Contrast(im)
-    im = enhancer.enhance(1.2)
+    im = enhancer.enhance(5)
 
     im1 = im.crop((left, upper, right, lower))
     im_grey = im1.convert("L")
 
-    #for bright agarose gels the picture needs to be inverted
-    if marker == "Agarose_DNA_marker_1kb":
-        im_grey = ImageOps.invert(im_grey)
-
     im_grey.show()
 
-
     array_grey = np.array(im_grey)
-    sum_grey_1D = pd.DataFrame(array_grey).sum(axis=1)
+    sum_grey_1D_y_axis = pd.DataFrame(array_grey).sum(axis=1).to_numpy()  # row wise adding of values, creates series of sums, then array (marker slice)
+    peaks_y = pd.DataFrame(signal.find_peaks(sum_grey_1D_y_axis, prominence=350)).transpose()[0]
+    peaks_y_df = pd.DataFrame(peaks_y).where(peaks_y > height*0.1).dropna().reset_index(drop=True)
+    #join the names of the molecular weights
+    k = 0
+    array_MW = []
+    while k <= len(peaks_y_df)-1:
+        inter_MW = config[str(marker)]["band"+str(k+1)]
+        array_MW.append(inter_MW)
+        k = k+1
+    df_MW = pd.DataFrame(array_MW, columns= ["MW"])
+    peaks_name = pd.concat([peaks_y_df, df_MW], axis=1)
 
-    # separate array in chunks, avoid random biases of the gel (marker bands are usually wider than one pixel)
-    array_chunk = []
-    factor = 5
-    i = 1
-    while (i)*factor <= height-factor:
-        one_chunk = sum_grey_1D[i*factor:(i*factor+factor)].mean()
-        array_chunk.append([i*factor+factor, one_chunk])
-        i=i+1
-
-    chunk_df = pd.DataFrame(array_chunk, columns=["pos_bottom", "chunks"])
-
-    cut_off = sum_grey_1D.max() * 0.70
-
-    df_bigger_cutoff = chunk_df[chunk_df["chunks"] > cut_off]
-
-    # get the low cutoff rows of each band (look for continious index count and take the lowest entry as position point of the band in the gel)
-    where_marker_array = []
-    i = 0
-    k = 1
-    while i <= len(df_bigger_cutoff)-2:
-
-        if df_bigger_cutoff.iloc[i, 0] + 5 != df_bigger_cutoff.iloc[i+1, 0]:
-            where_marker_array.append([config[marker]["band" + str(k)], df_bigger_cutoff.iloc[i, 0]])
-            k = k+1
-        i = i+1
-
-    df_marker_postion = pd.DataFrame(where_marker_array)
-    return df_marker_postion
+    return peaks_name # pos 0 = position, pos 1 = molecular weight names
 

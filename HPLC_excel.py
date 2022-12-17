@@ -9,13 +9,14 @@ from scipy import signal
 
 class HPLC:
 
-    def __init__(self, path, name_excel, name, df, a, b, V0, V_total, V_elu_df, array, array_df, color):
+    def __init__(self, path, name_file, name, df, a, b, V0, V_total, V_elu_df, array, array_df, color, file_type):
         self.color = color
+        self.file_type = file_type    # defines the file type that needs to be extracted
         self.name = name      # name of the plot + Heading
         self.array = array    # array with local/global maxima
         self.array_df = array_df
         self.path = path
-        self.name_excel = name_excel
+        self.name_file = name_file
         self.df = df  #cleaned df
         self.a = a   #factor of log(MW)
         self.b = b   #variable of Kav
@@ -48,10 +49,12 @@ class HPLC:
         return df_ml_MW
 
 
-    def sec_norm(path, name_excel):
+    def sec_norm(path, name_file, file_type):
         # clean dataframe for plotting
-
-        df_all = pd.read_excel(str(path) + str(name_excel) + ".xls", header = 2)
+        if file_type == "xls":
+            df_all = pd.read_excel(str(path) + str(name_file) + "." + str(file_type), header = 2)
+        if file_type == "txt":
+            df_all = pd.read_excel(str(path) + str(name_file) + "." + str(file_type), header = 1)
         array_columns = list(df_all.columns)    #creates array with all column names, search for "mAU" and optional "mS/cm", "(Injections)" = Fractions
 
         #find positions of the columns of interest and get both columns: volume [ml] (on the left side of the column of interest)
@@ -64,15 +67,22 @@ class HPLC:
         df_mAU = df_all[[ml, mAU]].copy()
         array_of_interest.append(df_mAU.rename(columns={ml : "ml_mAU", mAU : "mAU"}))
 
-        if "mS/cm" in array_columns:
-            index_mS = array_columns.index("mS/cm")
+        if "%" in array_columns:
+            index_mS = array_columns.index("%")
             ml = array_columns[index_mS-1]
             mS = array_columns[index_mS]
             df_mS = df_all[[ml, mS]].copy()
-            array_of_interest.append(df_mS.rename(columns={ml : "ml_mS", mS : "mS"}))
+            array_of_interest.append(df_mS.rename(columns={ml : "ml_%", mS : "% of elution-buffer"}))
 
         if "(Fractions)" in array_columns:
             index_In = array_columns.index("(Fractions)")
+            ml = array_columns[index_In - 1]
+            In = array_columns[index_In]
+            df_In = df_all[[ml, In]].copy().dropna()
+            array_of_interest.append(df_In.rename(columns={ml: "ml_In", In: "Fractions"}))
+
+        if "Fractions" in array_columns:
+            index_In = array_columns.index("Fractions")
             ml = array_columns[index_In - 1]
             In = array_columns[index_In]
             df_In = df_all[[ml, In]].copy().dropna()
@@ -102,7 +112,7 @@ class HPLC:
         ax1 = plt.subplot(1, 1, 1)
 
         # if Conductivity column was present and wanted
-        if "mS/cm" in list(df_2.columns):
+        if "%" in list(df_2.columns):
             ax2 = ax1.twinx()
 
         l1 = ax1.scatter(data=df_mAU, x="ml_mAU", y="mAU", color=str(color), label="UV/Vis signal")
@@ -123,9 +133,9 @@ class HPLC:
 
 
         # if Conductivity column was present and wanted
-        if "mS/cm" in list(df_2.columns):
-            l2 = ax2.scatter(data=df_2, x="Volume", y="Conductivity", color="black", label="Conductivity")
-            ax2.set_ylabel("Conductivity [mS/cm]", fontsize=15)
+        if "%" in list(df_2.columns):
+            l2 = ax2.scatter(data=df_2, x="ml_%", y="% of elution-buffer", color="black", label="% elution-buffer")
+            ax2.set_ylabel("Percent of elution-buffer", fontsize=15)
             labels = [l1, l2]
             labs = [l.get_label() for l in labels]
             plt.legend(labels, labs, loc=0)
@@ -174,7 +184,8 @@ class HPLC:
 
 # for testing on my windows surface only
 path = "C:\\Users\\Feiler Werner\\Desktop\\Skerra_data\\HPLC\\"
-name_excel = "29112022 WF MBP LepR2D PDI"
+name_file = "29112022 WF MBP LepR2D PDI"
+file_type = "xls"
 name = "MBP LepR2D PDI"
 
 config_file = "HPLC.ini"
@@ -200,7 +211,7 @@ config.sections()
 a = float(config["regression_parameters"]["a"])
 b = float(config["regression_parameters"]["b"])
 
-array_df = HPLC.sec_norm(path = path, name_excel = name_excel)
+array_df = HPLC.sec_norm(path = path, name_file = name_file, file_type = file_type)
 
 if conductivity.lower() != "yes":
     df_mAU = array_df[0]
